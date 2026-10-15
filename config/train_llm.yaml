@@ -1,0 +1,61 @@
+hydra:
+  run:
+    dir: outputs/train_llm/${now:%Y-%m-%d}/${now:%H-%M-%S} # Output directory
+
+seed: 1024
+
+datasets:
+  _target_: my_datasets.MetaQA.metaqa
+  cfgs:
+    root: ./data/MetaQA
+  train_names: 
+    # - webqsp_train_1
+    # - webqsp_train_2
+    # - webqsp_train_3
+    # - webqsp_train_4
+    # - webqsp_train_5
+    # - webqsp_train_6
+    # - webqsp_train_7
+    # - webqsp_train_8
+    # - webqsp_train_9
+    # - webqsp_train_10
+    # - webqsp_train_11
+    # - webqsp_train_12
+    # - webqsp_train_13
+    # - webqsp_train_14
+    # - webqsp_train_15
+    - metaqa_train
+
+  valid_names: 
+    - metaqa_valid
+
+
+graph_retriever:
+  # model_path: outputs/qa_finetune/2025-03-16/15-26-49/pretrained # webqsp
+  model_path: outputs/qa_finetune/2025-03-20/14-13-11/pretrained #metaqa
+  save_top_k_entity: 10
+  retrieval_batch_size: 2
+
+llm:
+  llm_model_path: meta-llama/Llama-2-7b-chat-hf
+  llm_frozen: False
+
+optimizer:
+  lr: 1e-5
+  wd: 0.05
+  warmup_epoch: 1
+
+valid:
+  inference_batch_size: 2
+  
+
+train:
+  batch_size: 2
+  num_epoch: 10
+  log_interval: 100
+  patience: 2
+  do_eval: True
+  batch_per_epoch: null
+  save_pretrained: yes
+  timeout: 60 # timeout minutes for multi-gpu training
+  checkpoint: null

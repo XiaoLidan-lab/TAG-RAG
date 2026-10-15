@@ -1,0 +1,78 @@
+hydra:
+  run:
+    dir: outputs/qa_finetune/${now:%Y-%m-%d}/${now:%H-%M-%S} 
+
+seed: 1024
+
+datasets:
+  _target_: my_datasets.WebQSP.webqsp
+  cfgs:
+    root: ./data/WebQSP
+  train_names:
+    - webqsp_train_1
+    - webqsp_train_2
+    - webqsp_train_3
+    - webqsp_train_4
+    - webqsp_train_5
+    - webqsp_train_6
+    - webqsp_train_7
+    - webqsp_train_8
+    - webqsp_train_9
+    - webqsp_train_10
+    - webqsp_train_11
+    - webqsp_train_12
+    - webqsp_train_13
+    - webqsp_train_14
+    - webqsp_train_15
+    
+  valid_names: 
+    - webqsp_valid
+
+# GFM model configuration
+model:
+  _target_: models.GNNRetriever
+  entity_model:
+    _target_: ultra.models.QueryNBFNet
+    input_dim: 512
+    hidden_dims: [512, 512, 512, 512, 512, 512]
+    message_func: distmult
+    aggregate_func: sum
+    short_cut: yes
+    layer_norm: yes
+
+# Loss configuration
+task:
+  strict_negative: yes
+  metric:
+    [mrr, hits@1, hits@2, hits@3, hits@5, hits@10, hits@20, hits@50, hits@100]
+  losses:
+    - name: ent_bce_loss
+      loss:
+        _target_: losses.BCELoss
+        adversarial_temperature: 0.2
+      cfg:
+        weight: 1.0
+    - name: ent_pcr_loss
+      loss:
+        _target_: losses.ListCELoss
+      cfg:
+        weight: 0.7
+
+# Optimizer configuration
+optimizer:
+  _target_: torch.optim.AdamW
+  lr: 5.0e-4 #webqsp
+  # lr: 1e-5 #metaqa
+
+# Training configuration
+train:
+  batch_size: 1
+  num_epoch: 30
+  patience: 2
+  log_interval: 100
+  batch_per_epoch: null
+  save_pretrained: yes # Save the model for QA inference
+  do_eval: yes
+  timeout: 60 # timeout minutes for multi-gpu training
+  init_entities_weight: True
+  checkpoint: null

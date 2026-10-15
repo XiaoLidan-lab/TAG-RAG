@@ -1,0 +1,43 @@
+hydra:
+  run:
+    dir: outputs/inference/metaqa/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+defaults:
+  - _self_
+
+seed: 1024
+
+datasets:
+  _target_: my_datasets.MetaQA.metaqa
+  cfgs:
+    root: ./data/MetaQA
+  data_names: 
+    # - webqsp_test_1
+    # - webqsp_test_2
+    # - webqsp_test_3
+    # - webqsp_test_4
+    # - webqsp_test_5
+    # - webqsp_test_6
+    # - webqsp_test_7
+    # - webqsp_test_8
+    # - webqsp_test_9
+    - metaqa_test
+
+llm:
+  llm_model_path: meta-llama/Llama-2-7b-chat-hf
+  checkpoint: outputs/train_llm/2025-03-17/21-45-53/llm_model_best.pth # webqsp
+  # checkpoint: outputs/train_llm/2025-03-20/15-03-49/llm_model_best.pth #metaqa
+  llm_frozen: True
+
+graph_retriever:
+  # model_path: outputs/qa_finetune/2025-03-08/13-32-11/pretrained
+  # model_path: outputs/qa_finetune/2025-03-18/18-03-12/pretrained #webqsp
+  model_path: outputs/qa_finetune/2025-03-20/14-13-11/pretrained #metaqa
+test:
+  retrieval_batch_size: 2
+  inference_batch_size: 2
+  top_k: 5
+  save_retrieval: True
+  save_top_k_entity: 10
+  init_entities_weight: True
+  timeout: 60
