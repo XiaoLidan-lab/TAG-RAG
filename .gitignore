@@ -1,0 +1,30 @@
+# Local datasets, checkpoints and experiment outputs
+/data/
+/outputs/
+/wandb/
+
+# Python and build caches
+__pycache__/
+*.py[cod]
+*.so
+*.dylib
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+/build/
+/dist/
+.venv/
+venv/
+
+# Credentials and machine-local configuration
+.env
+.env.*
+!.env.example
+.aws/
+.netrc
+
+# macOS and generated release archives
+.DS_Store
+._*
+/github-source.zip
